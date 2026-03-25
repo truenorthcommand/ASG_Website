@@ -33,7 +33,7 @@ export const blogRouter = router({
    * Get a single published blog post by slug
    */
   getBySlug: publicProcedure
-    .input(z.object({ slug: z.string() }))
+    .input(z.object({ slug: z.string().min(1) }))
     .query(async ({ input }) => {
       const post = await db.getBlogPostBySlug(input.slug);
       if (!post || post.status !== "published") {
@@ -49,7 +49,7 @@ export const blogRouter = router({
    * Get related blog posts by category
    */
   getRelated: publicProcedure
-    .input(z.object({ slug: z.string(), limit: z.number().default(3) }))
+    .input(z.object({ slug: z.string().min(1), limit: z.number().default(3) }))
     .query(async ({ input }) => {
       return db.getRelatedBlogPosts(input.slug, input.limit);
     }),
