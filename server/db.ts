@@ -62,22 +62,23 @@ export async function upsertUser(data: {
 
 export async function getBlogPostById(id: number) {
   const db = getDatabase();
-  return db.select().from(blogPosts).where(eq(blogPosts.id, id)).get();
+  const result = await db.select().from(blogPosts).where(eq(blogPosts.id, id));
+  return result[0] || null;
 }
 
 export async function getBlogPostBySlug(slug: string) {
   const db = getDatabase();
-  return db.select().from(blogPosts).where(eq(blogPosts.slug, slug)).get();
+  const result = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug));
+  return result[0] || null;
 }
 
 export async function getBlogPostsByStatus(status: "draft" | "scheduled" | "published") {
   const db = getDatabase();
-  return db
+  return await db
     .select()
     .from(blogPosts)
     .where(eq(blogPosts.status, status))
-    .orderBy(desc(blogPosts.publishDate))
-    .all();
+    .orderBy(desc(blogPosts.publishDate));
 }
 
 export async function getDraftPosts() {
@@ -112,7 +113,7 @@ export async function getRelatedBlogPosts(slug: string, limit = 3) {
   if (!post) return [];
 
   const db = getDatabase();
-  return db
+  const results = await db
     .select()
     .from(blogPosts)
     .where(
@@ -122,9 +123,8 @@ export async function getRelatedBlogPosts(slug: string, limit = 3) {
       )
     )
     .orderBy(desc(blogPosts.publishDate))
-    .limit(limit)
-    .all()
-    .filter((p: any) => p.id !== post.id);
+    .limit(limit);
+  return results.filter((p: any) => p.id !== post.id);
 }
 
 export async function createBlogPost(data: typeof blogPosts.$inferInsert) {
@@ -180,10 +180,9 @@ export async function createBlogPostEdit(data: typeof blogPostEdits.$inferInsert
 
 export async function getEditHistory(postId: number) {
   const db = getDatabase();
-  return db
+  return await db
     .select()
     .from(blogPostEdits)
     .where(eq(blogPostEdits.postId, postId))
-    .orderBy(desc(blogPostEdits.createdAt))
-    .all();
+    .orderBy(desc(blogPostEdits.createdAt));
 }
