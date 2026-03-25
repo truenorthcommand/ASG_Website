@@ -63,3 +63,4 @@
 
 ## Visual Updates
 - [x] Replace Home hero gradient background with aerial property PNG (with dark overlay)
+- [x] Restructure hero: full-width photo section (no overlay) + content section below

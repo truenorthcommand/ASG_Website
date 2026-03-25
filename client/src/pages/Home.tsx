@@ -32,23 +32,25 @@ export default function Home() {
   return (
     <div className="min-h-screen">
 
-      {/* Hero Section */}
+      {/* Hero Image Section — Full Width, No Overlay */}
       <section
-        className="relative overflow-hidden py-20 lg:py-32"
+        className="relative overflow-hidden h-96 lg:h-[500px]"
         style={{
           backgroundImage: `url('https://d2xsxph8kpxj0f.cloudfront.net/310519663393258417/gVGt3GVaioQVft9gFJLtBK/asg-hero-aerial_aadce161.png')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
+        aria-label="Aerial view of residential properties"
+      />
+
+      {/* Hero Content Section — Below the Image */}
+      <section
+        className="py-16 lg:py-24"
+        style={{ backgroundColor: "var(--asg-navy)" }}
         aria-labelledby="hero-heading"
       >
-        {/* Dark overlay for text legibility */}
-        <div className="absolute inset-0" aria-hidden="true"
-          style={{ background: "linear-gradient(to bottom right, rgba(26,35,50,0.82) 0%, rgba(26,35,50,0.65) 50%, rgba(26,35,50,0.75) 100%)" }}
-        />
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-6"
               style={{ backgroundColor: "rgba(46,139,87,0.2)", color: "var(--asg-green-light)" }}>
