@@ -133,12 +133,12 @@ export default function HowWeWork() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-white" aria-labelledby="how-cta-heading">
+      <section className="py-16" style={{ backgroundColor: "#22303b" }} aria-labelledby="how-cta-heading">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 id="how-cta-heading" className="text-2xl lg:text-3xl font-black mb-4" style={{ color: "var(--asg-navy)" }}>
+          <h2 id="how-cta-heading" className="text-2xl lg:text-3xl font-black mb-4 text-white">
             Ready to Get Started?
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-300 mb-6">
             Contact us today to discuss your maintenance requirements.
           </p>
           <Link

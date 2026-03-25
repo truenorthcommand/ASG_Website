@@ -52,6 +52,10 @@
   --asg-red: oklch(38% 0.18 20);             /* #C41E3A Alert Red */
   --asg-silver: oklch(72% 0.01 240);
 
+  /* Updated Color Scheme (2026) */
+  --asg-dark-section: #22303b;               /* Dark navy for stats/CTA sections */
+  --asg-white: #FFFFFF;                      /* White for headers/content sections */
+
   --primary: var(--asg-green);
   --primary-foreground: oklch(1 0 0);
   --sidebar-primary: var(--asg-green);

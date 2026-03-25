@@ -139,14 +139,14 @@ export default function Sectors() {
       {/* CTA */}
       <section
         className="py-16"
-        style={{ backgroundColor: "var(--asg-green)" }}
+        style={{ backgroundColor: "#22303b" }}
         aria-labelledby="sectors-cta-heading"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 id="sectors-cta-heading" className="text-2xl lg:text-3xl font-black text-white mb-4">
             Don't See Your Sector Listed?
           </h2>
-          <p className="text-green-100 mb-6">
+          <p className="text-gray-300 mb-6">
             We work with a wide range of property owners and managers. Get in touch to discuss your specific requirements.
           </p>
           <Link

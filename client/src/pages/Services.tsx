@@ -126,14 +126,14 @@ export default function Services() {
       {/* CTA */}
       <section
         className="py-16"
-        style={{ backgroundColor: "var(--asg-green)" }}
+        style={{ backgroundColor: "#22303b" }}
         aria-labelledby="services-cta-heading"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 id="services-cta-heading" className="text-2xl lg:text-3xl font-black text-white mb-4">
             Need a Service Not Listed Here?
           </h2>
-          <p className="text-green-100 mb-6">
+          <p className="text-gray-300 mb-6">
             If it's property-related, we can help. Get in touch and we'll find a solution.
           </p>
           <Link

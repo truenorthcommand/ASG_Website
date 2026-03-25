@@ -115,14 +115,14 @@ export default function CaseStudies() {
       {/* CTA */}
       <section
         className="py-16"
-        style={{ backgroundColor: "var(--asg-green)" }}
+        style={{ backgroundColor: "#22303b" }}
         aria-labelledby="cs-cta-heading"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 id="cs-cta-heading" className="text-2xl lg:text-3xl font-black text-white mb-4">
             Ready to Become Our Next Success Story?
           </h2>
-          <p className="text-green-100 mb-6">
+          <p className="text-gray-300 mb-6">
             Get in touch to discuss how ASG can support your property maintenance requirements.
           </p>
           <Link

@@ -198,12 +198,12 @@ export default function Resources() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-white" aria-labelledby="resources-cta-heading">
+      <section className="py-16" style={{ backgroundColor: "#22303b" }} aria-labelledby="resources-cta-heading">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 id="resources-cta-heading" className="text-2xl font-black mb-4" style={{ color: "var(--asg-navy)" }}>
+          <h2 id="resources-cta-heading" className="text-2xl font-black mb-4 text-white">
             Still Have Questions?
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-300 mb-6">
             Our team is happy to discuss your requirements in detail.
           </p>
           <Link
