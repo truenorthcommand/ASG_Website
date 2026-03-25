@@ -4,7 +4,7 @@
 - [x] Upload ASG logo to CDN (transparent PNG)
 - [x] Configure brand tokens in index.css (Primary Green #1B5E35, Secondary Green #2E8B57, Deep Navy #1A2332, Warm Grey #F5F5F0, Alert Red #C41E3A)
 - [x] Add Inter font via Google Fonts CDN
-- [ ] Configure security headers in server
+- [x] Configure security headers in server
 
 ## Layout Components
 - [x] Sticky Header with ASG logo and Emergency 24/7 CTA (red bg, white text)
@@ -55,11 +55,11 @@
 ## Pending / Future
 - [ ] Privacy Policy page (/privacy)
 - [ ] Terms & Conditions page (/terms)
-- [ ] Favicon upload and configuration
+- [x] Favicon upload and configuration
 - [ ] Security headers configuration
 - [ ] Google Analytics / analytics tagging implementation
 - [ ] Form submission end-to-end test against live TrueNorthOS
-- [ ] GitHub push (AdaptServices-Group/New-Website)
+- [x] GitHub push (AdaptServices-Group/New-Website)
 
 ## Visual Updates
 - [x] Replace Home hero gradient background with aerial property PNG (with dark overlay)
