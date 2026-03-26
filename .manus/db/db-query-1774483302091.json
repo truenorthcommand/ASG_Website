@@ -1,0 +1,43 @@
+{
+  "query": "SELECT id, slug, title, LENGTH(content) as content_length, SUBSTRING(content, 1, 100) as content_preview FROM blog_posts WHERE status = 'published' LIMIT 4;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3L6WrucWLY6mbFz.root --database gVGt3GVaioQVft9gFJLtBK --execute SELECT id, slug, title, LENGTH(content) as content_length, SUBSTRING(content, 1, 100) as content_preview FROM blog_posts WHERE status = 'published' LIMIT 4;",
+  "rows": [
+    {
+      "id": "1",
+      "slug": "why-emergencies-happen-at-2am",
+      "title": "Why Property Maintenance Emergencies Happen at 2 AM (And How to Prevent Them)",
+      "content_length": "771",
+      "content_preview": "Why Property Maintenance Emergencies Happen at 2 AM (And How to Prevent Them)"
+    },
+    {
+      "id": "2",
+      "slug": "reactive-vs-proactive-maintenance",
+      "title": "The Hidden Cost of Reactive vs. Proactive Property Maintenance",
+      "content_length": "467",
+      "content_preview": "The Hidden Cost of Reactive vs. Proactive Property Maintenance"
+    },
+    {
+      "id": "3",
+      "slug": "compliance-safety-standards",
+      "title": "What Property Managers Need to Know About Compliance & Safety Standards",
+      "content_length": "465",
+      "content_preview": "What Property Managers Need to Know About Compliance & Safety Standards"
+    },
+    {
+      "id": "4",
+      "slug": "emergency-response-leak-case-study",
+      "title": "Emergency Response Case Study: How We Fixed a Catastrophic Leak in 90 Minutes",
+      "content_length": "492",
+      "content_preview": "Emergency Response Case Study: How We Fixed a Catastrophic Leak in 90 Minutes"
+    }
+  ],
+  "messages": [
+    "It's 2 AM on a Sunday",
+    "You own a rental property. The boile",
+    "If you manage rental proper",
+    "A property manager in"
+  ],
+  "stdout": "id\tslug\ttitle\tcontent_length\tcontent_preview\n1\twhy-emergencies-happen-at-2am\tWhy Property Maintenance Emergencies Happen at 2 AM (And How to Prevent Them)\t771\tWhy Property Maintenance Emergencies Happen at 2 AM (And How to Prevent Them)\n\nIt's 2 AM on a Sunday\n2\treactive-vs-proactive-maintenance\tThe Hidden Cost of Reactive vs. Proactive Property Maintenance\t467\tThe Hidden Cost of Reactive vs. Proactive Property Maintenance\n\nYou own a rental property. The boile\n3\tcompliance-safety-standards\tWhat Property Managers Need to Know About Compliance & Safety Standards\t465\tWhat Property Managers Need to Know About Compliance & Safety Standards\n\nIf you manage rental proper\n4\temergency-response-leak-case-study\tEmergency Response Case Study: How We Fixed a Catastrophic Leak in 90 Minutes\t492\tEmergency Response Case Study: How We Fixed a Catastrophic Leak in 90 Minutes\n\nA property manager in\n",
+  "stderr": "",
+  "execution_time_ms": 394
+}

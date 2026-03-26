@@ -1,0 +1,34 @@
+{
+  "query": "SELECT id, slug, title, LENGTH(content) as content_length FROM blog_posts WHERE status = 'published' ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3L6WrucWLY6mbFz.root --database gVGt3GVaioQVft9gFJLtBK --execute SELECT id, slug, title, LENGTH(content) as content_length FROM blog_posts WHERE status = 'published' ORDER BY id;",
+  "rows": [
+    {
+      "id": "7",
+      "slug": "why-emergencies-happen-at-2am",
+      "title": "Why Property Maintenance Emergencies Happen at 2 AM (And How to Prevent Them)",
+      "content_length": "6270"
+    },
+    {
+      "id": "8",
+      "slug": "reactive-vs-proactive-maintenance",
+      "title": "The Hidden Cost of Reactive vs. Proactive Property Maintenance",
+      "content_length": "8045"
+    },
+    {
+      "id": "9",
+      "slug": "compliance-safety-standards",
+      "title": "What Property Managers Need to Know About Compliance & Safety Standards",
+      "content_length": "10057"
+    },
+    {
+      "id": "10",
+      "slug": "emergency-response-leak-case-study",
+      "title": "Emergency Response Case Study: How We Fixed a Catastrophic Leak in 90 Minutes",
+      "content_length": "7862"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tslug\ttitle\tcontent_length\n7\twhy-emergencies-happen-at-2am\tWhy Property Maintenance Emergencies Happen at 2 AM (And How to Prevent Them)\t6270\n8\treactive-vs-proactive-maintenance\tThe Hidden Cost of Reactive vs. Proactive Property Maintenance\t8045\n9\tcompliance-safety-standards\tWhat Property Managers Need to Know About Compliance & Safety Standards\t10057\n10\temergency-response-leak-case-study\tEmergency Response Case Study: How We Fixed a Catastrophic Leak in 90 Minutes\t7862\n",
+  "stderr": "",
+  "execution_time_ms": 362
+}
