@@ -22,6 +22,7 @@ import Terms from "./pages/Terms";
 import { Blog } from "./pages/Blog";
 import { BlogArticle } from "./pages/BlogArticle";
 import { AdminBlog } from "./pages/AdminBlog";
+import { AdminLogin } from "./pages/AdminLogin";
 
 function Router() {
   return (
@@ -44,6 +45,7 @@ function Router() {
           <Route path="/blog/:slug">
             {(params) => <BlogArticle slug={params.slug} />}
           </Route>
+          <Route path="/admin/login" component={AdminLogin} />
           <Route path="/admin/blog" component={AdminBlog} />
           <Route path="/404" component={NotFound} />
           {/* Final fallback route */}
