@@ -8,12 +8,14 @@ import { getDatabase } from "./_core/db";
 
 export async function getUserById(id: number) {
   const db = getDatabase();
-  return db.select().from(users).where(eq(users.id, id)).get();
+  const result = await db.select().from(users).where(eq(users.id, id));
+  return result[0] || null;
 }
 
 export async function getUserByOpenId(openId: string) {
   const db = getDatabase();
-  return db.select().from(users).where(eq(users.openId, openId)).get();
+  const result = await db.select().from(users).where(eq(users.openId, openId));
+  return result[0] || null;
 }
 
 export async function createUser(data: {
@@ -23,12 +25,16 @@ export async function createUser(data: {
   loginMethod?: string;
 }) {
   const db = getDatabase();
-  return db.insert(users).values(data).returning();
+  await db.insert(users).values(data);
+  const result = await db.select().from(users).where(eq(users.openId, data.openId));
+  return result[0] || null;
 }
 
 export async function updateUser(id: number, data: Partial<typeof users.$inferInsert>) {
   const db = getDatabase();
-  return db.update(users).set(data).where(eq(users.id, id)).returning();
+  await db.update(users).set(data).where(eq(users.id, id));
+  const result = await db.select().from(users).where(eq(users.id, id));
+  return result[0] || null;
 }
 
 export async function upsertUser(data: {
@@ -129,16 +135,19 @@ export async function getRelatedBlogPosts(slug: string, limit = 3) {
 
 export async function createBlogPost(data: typeof blogPosts.$inferInsert) {
   const db = getDatabase();
-  return db.insert(blogPosts).values(data).returning();
+  await db.insert(blogPosts).values(data);
+  const result = await db.select().from(blogPosts).where(eq(blogPosts.slug, data.slug!));
+  return result[0] || null;
 }
 
 export async function updateBlogPost(id: number, data: Partial<typeof blogPosts.$inferInsert>) {
   const db = getDatabase();
-  return db
+  await db
     .update(blogPosts)
     .set({ ...data, updatedAt: new Date() })
-    .where(eq(blogPosts.id, id))
-    .returning();
+    .where(eq(blogPosts.id, id));
+  const result = await db.select().from(blogPosts).where(eq(blogPosts.id, id));
+  return result[0] || null;
 }
 
 export async function deleteBlogPost(id: number) {
@@ -175,7 +184,8 @@ export async function incrementBlogPostViews(id: number) {
 
 export async function createBlogPostEdit(data: typeof blogPostEdits.$inferInsert) {
   const db = getDatabase();
-  return db.insert(blogPostEdits).values(data).returning();
+  await db.insert(blogPostEdits).values(data);
+  return null;
 }
 
 export async function getEditHistory(postId: number) {
