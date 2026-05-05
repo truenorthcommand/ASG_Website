@@ -133,8 +133,7 @@ async function startServer() {
       });
     } catch (error) {
       console.error("[Auth] Login failed:", error);
-      const errMsg = error instanceof Error ? error.message : String(error);
-      res.status(500).json({ error: "Login failed", detail: errMsg });
+      res.status(500).json({ error: "Login failed" });
     }
   });
   
