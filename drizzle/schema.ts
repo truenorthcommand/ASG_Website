@@ -2,7 +2,7 @@ import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, index } from "dri
 
 /**
  * Core user table backing auth flow.
- * Extend this file with additional tables as your product grows.
+ * Updated for Railway standalone with username/password authentication.
  * Columns use camelCase to match both database fields and generated types.
  */
 export const users = mysqlTable("users", {
@@ -11,11 +11,12 @@ export const users = mysqlTable("users", {
    * Use this for relations between tables.
    */
   id: int("id").autoincrement().primaryKey(),
-  /** Manus OAuth identifier (openId) returned from the OAuth callback. Unique per user. */
-  openId: varchar("openId", { length: 64 }).notNull().unique(),
+  /** Username for login. Unique per user. */
+  username: varchar("username", { length: 64 }).notNull().unique(),
+  /** Bcrypt hashed password */
+  passwordHash: varchar("password_hash", { length: 255 }).notNull(),
   name: text("name"),
   email: varchar("email", { length: 320 }),
-  loginMethod: varchar("loginMethod", { length: 64 }),
   role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -37,10 +38,10 @@ export const blogPosts = mysqlTable(
     excerpt: text("excerpt").notNull(),
     content: text("content").notNull(), // Markdown format
     category: mysqlEnum("category", ["maintenance", "case-study", "emergency"]).notNull(),
-    featuredImage: varchar("featured_image", { length: 500 }).notNull(), // CDN URL
+    featuredImage: varchar("featured_image", { length: 500 }).notNull(), // Local or CDN URL
     metaDescription: varchar("meta_description", { length: 160 }).notNull(), // SEO
     readTime: int("read_time").notNull(), // minutes
-    author: mysqlEnum("author", ["AI", "Human"]).default("AI").notNull(),
+    author: mysqlEnum("author", ["AI", "Human"]).default("Human").notNull(),
     status: mysqlEnum("status", ["draft", "scheduled", "published"]).default("draft").notNull(),
     publishDate: timestamp("publish_date").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),

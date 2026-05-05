@@ -2,12 +2,16 @@ import "dotenv/config";
 import express from "express";
 import { createServer } from "http";
 import net from "net";
+import helmet from "helmet";
+import multer from "multer";
+import path from "path";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
-import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { initializeDatabase } from "./db";
+import * as auth from "../auth";
+import { getUploadDir } from "../storage";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -28,6 +32,14 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
   throw new Error(`No available port found starting from ${startPort}`);
 }
 
+// Configure multer for file uploads
+const upload = multer({
+  dest: getUploadDir(),
+  limits: {
+    fileSize: 50 * 1024 * 1024, // 50MB max file size
+  },
+});
+
 async function startServer() {
   // Initialize database connection first
   try {
@@ -40,39 +52,89 @@ async function startServer() {
   const app = express();
   const server = createServer(app);
   
-  // Security headers middleware
-  app.use((req, res, next) => {
-    res.setHeader("X-Content-Type-Options", "nosniff");
-    res.setHeader("X-XSS-Protection", "1; mode=block");
-    res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
-    
-    // In development, relax CSP to allow Manus preview iframe and Vite HMR
-    if (process.env.NODE_ENV === "development") {
-      res.setHeader(
-        "Content-Security-Policy",
-        "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://fonts.googleapis.com https://*.manus.computer https://*.manus.space; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https: ws: wss: https://*.manus.computer https://*.manus.space; frame-ancestors 'self' https://*.manus.computer https://*.manus.space;"
-      );
-    } else {
-      // Production: strict CSP
-      res.setHeader("X-Frame-Options", "SAMEORIGIN");
-      res.setHeader(
-        "Content-Security-Policy",
-        "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https:; frame-ancestors 'self';"
-      );
-    }
-    
-    res.setHeader(
-      "Permissions-Policy",
-      "geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"
-    );
-    next();
-  });
+  // Helmet security middleware
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            "'unsafe-eval'",
+            "https://cdn.jsdelivr.net",
+            "https://fonts.googleapis.com",
+          ],
+          styleSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            "https://fonts.googleapis.com",
+          ],
+          imgSrc: ["'self'", "data:", "https:"],
+          fontSrc: ["'self'", "https://fonts.gstatic.com"],
+          connectSrc: ["'self'", "https:", "ws:", "wss:"],
+          frameSrc: ["'self'"],
+        },
+      },
+      // Relax for development
+      ...(process.env.NODE_ENV === "development" && {
+        contentSecurityPolicy: false,
+        crossOriginEmbedderPolicy: false,
+      }),
+    })
+  );
   
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
-  // OAuth callback under /api/oauth/callback
-  registerOAuthRoutes(app);
+  
+  // Serve uploaded files statically
+  app.use("/uploads", express.static(getUploadDir()));
+  
+  // Auth routes
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      if (!username || !password) {
+        res.status(400).json({ error: "Username and password are required" });
+        return;
+      }
+      
+      const user = await auth.authenticateUser(username, password);
+      
+      if (!user) {
+        res.status(401).json({ error: "Invalid credentials" });
+        return;
+      }
+      
+      const sessionToken = await auth.createSessionToken({
+        userId: user.id,
+        username: user.username,
+        role: user.role,
+      });
+      
+      auth.setSessionCookie(req, res, sessionToken);
+      
+      res.json({
+        success: true,
+        user: {
+          id: user.id,
+          username: user.username,
+          role: user.role,
+        },
+      });
+    } catch (error) {
+      console.error("[Auth] Login failed:", error);
+      res.status(500).json({ error: "Login failed" });
+    }
+  });
+  
+  app.post("/api/auth/logout", (req, res) => {
+    auth.clearSessionCookie(req, res);
+    res.json({ success: true });
+  });
+  
   // tRPC API
   app.use(
     "/api/trpc",
@@ -81,6 +143,7 @@ async function startServer() {
       createContext,
     })
   );
+  
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);

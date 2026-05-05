@@ -1,14 +1,21 @@
 import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Lock } from "lucide-react";
-import { useEffect } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Lock, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
+import { toast } from "sonner";
 
 export function AdminLogin() {
   const { user, loading } = useAuth();
   const [, setLocation] = useLocation();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
 
   // If already authenticated, redirect to admin blog
   useEffect(() => {
@@ -16,6 +23,55 @@ export function AdminLogin() {
       setLocation("/admin/blog");
     }
   }, [user, loading, setLocation]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.username || !formData.password) {
+      toast.error("Please enter both username and password");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Login failed");
+      }
+
+      toast.success("Login successful!");
+      
+      // Reload to refresh auth state
+      window.location.href = "/admin/blog";
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to login. Please check your credentials."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   if (loading) {
     return (
@@ -46,22 +102,53 @@ export function AdminLogin() {
             Sign in to access the blog management system
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            You need to be authenticated to access the admin dashboard. Click the button below to sign in with your Manus account.
-          </p>
-          <Button
-            onClick={() => {
-              window.location.href = getLoginUrl();
-            }}
-            className="w-full"
-            size="lg"
-          >
-            Sign In with Manus
-          </Button>
-          <p className="text-xs text-muted-foreground text-center">
-            You will be redirected to the Manus login portal. After authentication, you'll be returned to the admin dashboard.
-          </p>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                name="username"
+                type="text"
+                placeholder="Enter your username"
+                value={formData.username}
+                onChange={handleInputChange}
+                disabled={isSubmitting}
+                required
+                autoComplete="username"
+                autoFocus
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Enter your password"
+                value={formData.password}
+                onChange={handleInputChange}
+                disabled={isSubmitting}
+                required
+                autoComplete="current-password"
+              />
+            </div>
+            <Button
+              type="submit"
+              className="w-full"
+              size="lg"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                "Sign In"
+              )}
+            </Button>
+          </form>
         </CardContent>
       </Card>
     </div>

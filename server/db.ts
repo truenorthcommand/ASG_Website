@@ -12,21 +12,28 @@ export async function getUserById(id: number) {
   return result[0] || null;
 }
 
-export async function getUserByOpenId(openId: string) {
+export async function getUserByUsername(username: string) {
   const db = getDatabase();
-  const result = await db.select().from(users).where(eq(users.openId, openId));
+  const result = await db.select().from(users).where(eq(users.username, username));
+  return result[0] || null;
+}
+
+export async function getUserByEmail(email: string) {
+  const db = getDatabase();
+  const result = await db.select().from(users).where(eq(users.email, email));
   return result[0] || null;
 }
 
 export async function createUser(data: {
-  openId: string;
+  username: string;
+  passwordHash: string;
   name?: string;
   email?: string;
-  loginMethod?: string;
+  role?: "user" | "admin";
 }) {
   const db = getDatabase();
   await db.insert(users).values(data);
-  const result = await db.select().from(users).where(eq(users.openId, data.openId));
+  const result = await db.select().from(users).where(eq(users.username, data.username));
   return result[0] || null;
 }
 
@@ -37,29 +44,17 @@ export async function updateUser(id: number, data: Partial<typeof users.$inferIn
   return result[0] || null;
 }
 
-export async function upsertUser(data: {
-  openId: string;
-  name?: string | null;
-  email?: string | null;
-  loginMethod?: string | null;
-  lastSignedIn?: Date;
-}) {
-  const existing = await getUserByOpenId(data.openId);
-  if (existing) {
-    const updateData: any = {
-      ...(data.name !== undefined && { name: data.name }),
-      ...(data.email !== undefined && { email: data.email }),
-      ...(data.loginMethod !== undefined && { loginMethod: data.loginMethod }),
-      ...(data.lastSignedIn && { lastSignedIn: data.lastSignedIn }),
-    };
-    return updateUser(existing.id, updateData);
-  }
-  return createUser({
-    openId: data.openId,
-    name: data.name || undefined,
-    email: data.email || undefined,
-    loginMethod: data.loginMethod || undefined,
-  });
+export async function updateUserPassword(id: number, passwordHash: string) {
+  const db = getDatabase();
+  await db.update(users).set({ passwordHash, updatedAt: new Date() }).where(eq(users.id, id));
+  const result = await db.select().from(users).where(eq(users.id, id));
+  return result[0] || null;
+}
+
+export async function updateUserLastSignedIn(id: number) {
+  const db = getDatabase();
+  await db.update(users).set({ lastSignedIn: new Date() }).where(eq(users.id, id));
+  return null;
 }
 
 // ============================================================================
@@ -129,8 +124,8 @@ export async function getRelatedBlogPosts(slug: string, limit = 3) {
       )
     )
     .orderBy(desc(blogPosts.publishDate))
-    .limit(limit);
-  return results.filter((p: any) => p.id !== post.id);
+    .limit(limit + 1); // Get one extra to filter out current post
+  return results.filter((p: any) => p.id !== post.id).slice(0, limit);
 }
 
 export async function createBlogPost(data: typeof blogPosts.$inferInsert) {
