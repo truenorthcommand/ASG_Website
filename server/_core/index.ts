@@ -8,7 +8,7 @@ import path from "path";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
-import { serveStatic, setupVite } from "./vite";
+import { serveStatic } from "./static";
 import { initializeDatabase } from "./db";
 import * as auth from "../auth";
 import { getUploadDir } from "../storage";
@@ -146,6 +146,9 @@ async function startServer() {
   
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
+    // Dynamic import to prevent vite.config.ts (uses import.meta.dirname)
+    // from being bundled into the production dist/index.js
+    const { setupVite } = await import("./vite");
     await setupVite(app, server);
   } else {
     serveStatic(app);
