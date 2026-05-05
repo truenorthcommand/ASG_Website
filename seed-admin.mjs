@@ -8,7 +8,7 @@
 import "dotenv/config";
 import { drizzle } from "drizzle-orm/mysql2";
 import mysql from "mysql2/promise";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { users } from "./drizzle/schema.ts";
 import { eq } from "drizzle-orm";
 

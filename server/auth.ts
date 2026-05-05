@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { SignJWT, jwtVerify } from "jose";
 import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import type { Request, Response } from "express";
