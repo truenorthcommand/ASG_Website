@@ -3,13 +3,10 @@
 
 import fs from "fs/promises";
 import path from "path";
-import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Upload directory relative to project root
-const UPLOAD_DIR = path.join(__dirname, "../uploads");
+// Use process.cwd() for reliable path resolution in production
+// Railway deploys to /app, so uploads will be at /app/uploads
+const UPLOAD_DIR = path.join(process.cwd(), "uploads");
 
 /**
  * Ensure upload directory exists
