@@ -1,4 +1,11 @@
 import "dotenv/config";
+import { webcrypto } from "node:crypto";
+
+// Polyfill globalThis.crypto for jose JWT library in Node.js < 20
+if (!globalThis.crypto) {
+  (globalThis as any).crypto = webcrypto;
+}
+
 import express from "express";
 import { createServer } from "http";
 import net from "net";
