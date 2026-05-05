@@ -32,15 +32,15 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
   throw new Error(`No available port found starting from ${startPort}`);
 }
 
-// Configure multer for file uploads
-const upload = multer({
-  dest: getUploadDir(),
-  limits: {
-    fileSize: 50 * 1024 * 1024, // 50MB max file size
-  },
-});
-
 async function startServer() {
+  // Configure multer for file uploads (inside async function to ensure proper initialization)
+  const upload = multer({
+    dest: getUploadDir(),
+    limits: {
+      fileSize: 50 * 1024 * 1024, // 50MB max file size
+    },
+  });
+
   // Initialize database connection first
   try {
     await initializeDatabase();
